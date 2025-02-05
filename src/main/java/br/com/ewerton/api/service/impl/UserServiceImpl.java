@@ -1,6 +1,6 @@
 package br.com.ewerton.api.service.impl;
 
-import br.com.ewerton.api.domain.User;
+import br.com.ewerton.api.domain.Users;
 import br.com.ewerton.api.repositories.UserRepository;
 import br.com.ewerton.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository repository;
 
     @Override
-    public User findById(Integer id) {
-        Optional<User> obj = repository.findById(id);
+    public Users findById(Integer id) {
+        Optional<Users> obj = repository.findById(id);
         return obj.orElse(null);
     }
 }

@@ -1,9 +1,9 @@
 package br.com.ewerton.api.service;
 
-import br.com.ewerton.api.domain.User;
+import br.com.ewerton.api.domain.Users;
 
 public interface UserService {
 
-        User findById(Integer id);
+        Users findById(Integer id);
 
 }
