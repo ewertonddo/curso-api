@@ -43,4 +43,12 @@ public class UserResource {
                 .buildAndExpand(newObj.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UsersDTO> update(@PathVariable Integer id,
+                                           @RequestBody UsersDTO obj){
+        obj.setId(id);
+        Users newUsers = service.update(obj);
+        return ResponseEntity.ok().body(mapper.map(newUsers, UsersDTO.class));
+    }
 }
