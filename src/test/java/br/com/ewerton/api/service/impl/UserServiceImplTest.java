@@ -3,6 +3,7 @@ package br.com.ewerton.api.service.impl;
 import br.com.ewerton.api.domain.Users;
 import br.com.ewerton.api.domain.dto.UsersDTO;
 import br.com.ewerton.api.repositories.UserRepository;
+import br.com.ewerton.api.service.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -52,6 +53,18 @@ class UserServiceImplTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(MAIL, response.getEmail());
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFounException() {
+        when(repository.findById(anyInt()))
+                .thenThrow(new ObjectNotFoundException("Object not found!"));
+        try {
+            service.findById(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("Object not found!", ex.getMessage());
+        }
     }
 
     @Test
