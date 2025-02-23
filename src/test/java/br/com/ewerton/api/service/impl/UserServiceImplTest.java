@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
@@ -84,7 +85,18 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnSuccess() {
+        when(repository.save(Mockito.any())).thenReturn(users);
+
+        Users response = service.create(usersDTO);
+
+        assertNotNull(response);
+        assertEquals(Users.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(MAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
+
     }
 
     @Test
