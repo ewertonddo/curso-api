@@ -3,6 +3,7 @@ package br.com.ewerton.api.service.impl;
 import br.com.ewerton.api.domain.Users;
 import br.com.ewerton.api.domain.dto.UsersDTO;
 import br.com.ewerton.api.repositories.UserRepository;
+import br.com.ewerton.api.service.exceptions.DataIntegratyViolationException;
 import br.com.ewerton.api.service.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +97,19 @@ class UserServiceImplTest {
         assertEquals(NAME, response.getName());
         assertEquals(MAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
+    }
 
+    @Test
+    void whenCreateThenReturnADataIntegrityViolation() {
+        when(repository.findByEmail(Mockito.anyString())).thenReturn(optionalUsers);
+
+        try {
+            optionalUsers.get().setId(2);
+            Users response = service.create(usersDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+            assertEquals("E-mail já cadastrado!", ex.getMessage());
+        }
     }
 
     @Test
