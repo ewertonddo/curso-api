@@ -3,7 +3,7 @@ package br.com.ewerton.api.service.impl;
 import br.com.ewerton.api.domain.Users;
 import br.com.ewerton.api.domain.dto.UsersDTO;
 import br.com.ewerton.api.repositories.UserRepository;
-import br.com.ewerton.api.service.exceptions.DataIntegratyViolationException;
+import br.com.ewerton.api.service.exceptions.DataIntegrityViolationException;
 import br.com.ewerton.api.service.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,7 @@ class UserServiceImplTest {
     public static final String MAIL = "teste@teste.com";
     public static final String PASSWORD = "123";
     public static final int INDEX = 0;
+    public static final String E_MAIL_JA_CADASTRADO = "E-mail já cadastrado!";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -106,8 +107,8 @@ class UserServiceImplTest {
             optionalUsers.get().setId(2);
             Users response = service.create(usersDTO);
         } catch (Exception ex) {
-            assertEquals(DataIntegratyViolationException.class, ex.getClass());
-            assertEquals("E-mail já cadastrado!", ex.getMessage());
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals(E_MAIL_JA_CADASTRADO, ex.getMessage());
         }
     }
 
@@ -123,6 +124,19 @@ class UserServiceImplTest {
         assertEquals(NAME, response.getName());
         assertEquals(MAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenUpdateThenReturnDataIntegrityViolation() {
+        when(repository.findByEmail(Mockito.anyString()))
+                .thenThrow(new DataIntegrityViolationException(E_MAIL_JA_CADASTRADO));
+
+        try {
+            Users response = service.update(usersDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals(E_MAIL_JA_CADASTRADO, ex.getMessage());
+        }
     }
 
     @Test
