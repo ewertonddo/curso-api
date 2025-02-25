@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class UserServiceImplTest {
 
@@ -28,6 +28,7 @@ class UserServiceImplTest {
     public static final String PASSWORD = "123";
     public static final int INDEX = 0;
     public static final String E_MAIL_JA_CADASTRADO = "E-mail já cadastrado!";
+    public static final String OBJECT_NOT_FOUND = "Object not found!";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -62,12 +63,12 @@ class UserServiceImplTest {
     @Test
     void whenFindByIdThenReturnAnObjectNotFounException() {
         when(repository.findById(anyInt()))
-                .thenThrow(new ObjectNotFoundException("Object not found!"));
+                .thenThrow(new ObjectNotFoundException(OBJECT_NOT_FOUND));
         try {
             service.findById(ID);
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals("Object not found!", ex.getMessage());
+            assertEquals(OBJECT_NOT_FOUND, ex.getMessage());
         }
     }
 
@@ -140,8 +141,14 @@ class UserServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void deleteWithSuccess() {
+        when(repository.findById(anyInt())).thenReturn(optionalUsers);
+        doNothing().when(repository).deleteById(anyInt());
+        service.delete(anyInt());
+        Mockito.verify(repository, times(1)).deleteById(anyInt());
     }
+
+
 
     private void startUsers(){
         users = new Users(ID, NAME, MAIL, PASSWORD);
