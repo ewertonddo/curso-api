@@ -4,7 +4,7 @@ import br.com.ewerton.api.domain.Users;
 import br.com.ewerton.api.domain.dto.UsersDTO;
 import br.com.ewerton.api.repositories.UserRepository;
 import br.com.ewerton.api.service.UserService;
-import br.com.ewerton.api.service.exceptions.DataIntegratyViolationException;
+import br.com.ewerton.api.service.exceptions.DataIntegrityViolationException;
 import br.com.ewerton.api.service.exceptions.ObjectNotFoundException;
 
 import org.modelmapper.ModelMapper;
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     private void findByEmail(UsersDTO obj) {
         Optional<Users> users = repository.findByEmail(obj.getEmail());
         if (users.isPresent() && !users.get().getId().equals(obj.getId())) {
-            throw new DataIntegratyViolationException("E-mail já cadastrado!");
+            throw new DataIntegrityViolationException("E-mail já cadastrado!");
         }
     }
 }

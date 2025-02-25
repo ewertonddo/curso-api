@@ -1,6 +1,6 @@
 package br.com.ewerton.api.resources.exceptions;
 
-import br.com.ewerton.api.service.exceptions.DataIntegratyViolationException;
+import br.com.ewerton.api.service.exceptions.DataIntegrityViolationException;
 import br.com.ewerton.api.service.exceptions.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,8 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(DataIntegratyViolationException.class)
-    public ResponseEntity<StandardError> dataIntegratyViolation(DataIntegratyViolationException ex,
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<StandardError> dataIntegratyViolation(DataIntegrityViolationException ex,
                                                                 HttpServletRequest request) {
         StandardError error = new StandardError(LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
