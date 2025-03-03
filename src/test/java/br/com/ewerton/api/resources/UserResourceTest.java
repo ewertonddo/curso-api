@@ -3,6 +3,7 @@ package br.com.ewerton.api.resources;
 import br.com.ewerton.api.domain.Users;
 import br.com.ewerton.api.domain.dto.UsersDTO;
 import br.com.ewerton.api.service.impl.UserServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,6 +12,9 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +90,14 @@ class UserResourceTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnCreated() {
+        when(service.create(any())).thenReturn(users);
+
+        ResponseEntity<UsersDTO> response = resource.create(usersDTO);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertNotNull(response.getHeaders().get("Location"));
     }
 
     @Test
@@ -100,5 +111,10 @@ class UserResourceTest {
     private void startMock() {
         users = new Users(ID, NAME, MAIL, PASSWORD);
         usersDTO = new UsersDTO(ID, NAME, MAIL, PASSWORD);
+
+        HttpServletRequest request = new MockHttpServletRequest();
+        ServletRequestAttributes servletRequestAttributes =
+                new ServletRequestAttributes(request);
+        RequestContextHolder.setRequestAttributes(servletRequestAttributes);
     }
 }
