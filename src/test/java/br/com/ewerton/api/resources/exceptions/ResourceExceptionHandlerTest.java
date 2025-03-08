@@ -1,5 +1,6 @@
 package br.com.ewerton.api.resources.exceptions;
 
+import br.com.ewerton.api.service.exceptions.DataIntegrityViolationException;
 import br.com.ewerton.api.service.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ResourceExceptionHandlerTest {
 
     public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado!";
+    public static final String EMAIL_JA_CADASTRADO = "Email já cadastrado!";
     @InjectMocks
     private ResourceExceptionHandler exception;
 
@@ -38,6 +40,17 @@ class ResourceExceptionHandlerTest {
 
     }
     @Test
-    void dataIntegratyViolation() {
+    void whenDataIntegrityViolationThenReturnAResponseEntity() {
+        ResponseEntity<StandardError> response = exception.dataIntegratyViolation(
+            new DataIntegrityViolationException(EMAIL_JA_CADASTRADO),
+            new MockHttpServletRequest());
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(EMAIL_JA_CADASTRADO, response.getBody().getError());
+        assertEquals(400, response.getBody().getStatus());
     }
 }
